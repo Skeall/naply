@@ -73,12 +73,12 @@ export const Debrief: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen pb-20 px-4">
-      <div className="max-w-md mx-auto pt-8 space-y-6">
+    <div className="min-h-screen pb-32">
+      <div className="max-w-sm mx-auto px-6 pt-12 space-y-8">
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-2">Debrief</h1>
-          <p className="text-gray-400 text-sm">
+        <div className="text-center space-y-2">
+          <h1 className="h1">Debrief</h1>
+          <p className="caption text-secondary">
             {napInfo.name} • {formatDuration(napInfo.duration)}
           </p>
         </div>
@@ -86,107 +86,131 @@ export const Debrief: React.FC = () => {
         {/* Questions */}
         <div className="space-y-6">
           {/* Q1: Energy After */}
-          <div className="bg-dark-card rounded-2xl p-6 border border-dark-border">
-            <label className="block text-sm font-medium text-gray-300 mb-3">
+          <div className="glass-card-raised p-6">
+            <label className="block body text-primary mb-4">
               Q1) Énergie maintenant ?
             </label>
-            <input
-              type="range"
-              min="0"
-              max="10"
-              value={energyAfter}
-              onChange={(e) => setEnergyAfter(Number(e.target.value))}
-              className="slider w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <div className="slider-premium">
+              <div className="slider-track" />
+              <div 
+                className="slider-fill" 
+                style={{ width: `${(energyAfter / 10) * 100}%` }}
+              />
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={energyAfter}
+                onChange={(e) => setEnergyAfter(Number(e.target.value))}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                style={{ padding: 0, margin: 0 }}
+              />
+            </div>
+            <div className="flex justify-between caption text-secondary mt-3">
               <span>0</span>
-              <span className="text-blue-400 font-bold">{energyAfter}</span>
+              <span className="body text-primary font-medium">{energyAfter}</span>
               <span>10</span>
             </div>
           </div>
 
           {/* Q2: Focus After */}
-          <div className="bg-dark-card rounded-2xl p-6 border border-dark-border">
-            <label className="block text-sm font-medium text-gray-300 mb-3">
+          <div className="glass-card-raised p-6">
+            <label className="block body text-primary mb-4">
               Q2) Focus maintenant ?
             </label>
-            <input
-              type="range"
-              min="0"
-              max="10"
-              value={focusAfter}
-              onChange={(e) => setFocusAfter(Number(e.target.value))}
-              className="slider w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <div className="slider-premium">
+              <div className="slider-track" />
+              <div 
+                className="slider-fill" 
+                style={{ width: `${(focusAfter / 10) * 100}%` }}
+              />
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={focusAfter}
+                onChange={(e) => setFocusAfter(Number(e.target.value))}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                style={{ padding: 0, margin: 0 }}
+              />
+            </div>
+            <div className="flex justify-between caption text-secondary mt-3">
               <span>0</span>
-              <span className="text-blue-400 font-bold">{focusAfter}</span>
+              <span className="body text-primary font-medium">{focusAfter}</span>
               <span>10</span>
             </div>
           </div>
 
           {/* Q3: Grogginess */}
-          <div className="bg-dark-card rounded-2xl p-6 border border-dark-border">
-            <label className="block text-sm font-medium text-gray-300 mb-3">
+          <div className="glass-card-raised p-6">
+            <label className="block body text-primary mb-4">
               Q3) Grogginess (tête dans le cul) ?
             </label>
-            <input
-              type="range"
-              min="0"
-              max="10"
-              value={grogginessAfter}
-              onChange={(e) => setGrogginessAfter(Number(e.target.value))}
-              className="slider w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <div className="slider-premium">
+              <div className="slider-track" />
+              <div 
+                className="slider-fill" 
+                style={{ width: `${(grogginessAfter / 10) * 100}%` }}
+              />
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={grogginessAfter}
+                onChange={(e) => setGrogginessAfter(Number(e.target.value))}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                style={{ padding: 0, margin: 0 }}
+              />
+            </div>
+            <div className="flex justify-between caption text-secondary mt-3">
               <span>0</span>
-              <span className="text-blue-400 font-bold">{grogginessAfter}</span>
+              <span className="body text-primary font-medium">{grogginessAfter}</span>
               <span>10</span>
             </div>
           </div>
 
           {/* Q4: Sleep Latency */}
-          <div className="bg-dark-card rounded-2xl p-6 border border-dark-border">
-            <label className="block text-sm font-medium text-gray-300 mb-3">
+          <div className="glass-card-raised p-6">
+            <label className="block body text-primary mb-4">
               Q4) Temps d'endormissement estimé
             </label>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {sleepLatencyOptions.map((option) => (
-                <label key={option.value} className="flex items-center space-x-3 cursor-pointer">
+                <label key={option.value} className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="radio"
                     name="sleepLatency"
                     value={option.value}
                     checked={sleepLatency === option.value}
                     onChange={(e) => setSleepLatency(e.target.value as SleepLatencyBucket)}
-                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-primary bg-surface-raised border-border rounded focus:ring-2 focus:ring-primary focus:ring-opacity-30"
                   />
-                  <span className="text-sm text-gray-300">{option.label}</span>
+                  <span className="body text-secondary">{option.label}</span>
                 </label>
               ))}
             </div>
           </div>
 
           {/* Context Tags (Optional) */}
-          <div className="bg-dark-card rounded-2xl p-6 border border-dark-border">
-            <label className="block text-sm font-medium text-gray-300 mb-3">
+          <div className="glass-card-raised p-6">
+            <label className="block body text-primary mb-4">
               Contexte (optionnel) - Max 2 tags
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {CONTEXT_TAGS.map((tag) => (
                 <button
                   key={tag}
                   onClick={() => handleContextTagToggle(tag)}
                   disabled={!contextTags.includes(tag) && contextTags.length >= 2}
                   className={`
-                    px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                    px-3 py-2 rounded-12 caption font-medium transition-all duration-200
                     ${contextTags.includes(tag)
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      ? 'bg-primary text-white'
+                      : 'bg-surface-raised border border-border text-secondary hover:bg-surface'
                     }
                     ${!contextTags.includes(tag) && contextTags.length >= 2
                       ? 'opacity-50 cursor-not-allowed'
-                      : 'cursor-pointer'
+                      : 'cursor-pointer hover:scale-105 active:scale-95'
                     }
                   `}
                 >
@@ -200,7 +224,7 @@ export const Debrief: React.FC = () => {
         {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          className="btn-primary w-full text-lg py-4"
+          className="btn-cta w-full"
         >
           Enregistrer
         </button>

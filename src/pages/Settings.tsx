@@ -21,31 +21,29 @@ export const Settings: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20 px-4">
-      <div className="max-w-md mx-auto pt-8 space-y-6">
+    <div className="min-h-screen pb-32">
+      <div className="max-w-sm mx-auto px-6 pt-12 space-y-8">
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-2">Réglages</h1>
-          <p className="text-gray-400 text-sm">
-            Personnalisez votre expérience
-          </p>
+        <div className="space-y-2">
+          <h1 className="h1">Réglages</h1>
+          <p className="caption">Personnalisez votre expérience</p>
         </div>
 
         {/* Theme Setting */}
-        <div className="bg-dark-card rounded-2xl p-6 border border-dark-border">
-          <h2 className="text-lg font-semibold text-white mb-4">Apparence</h2>
+        <div className="glass-card-raised p-6">
+          <h2 className="h2 mb-4">Apparence</h2>
           <div className="flex items-center justify-between">
-            <span className="text-gray-300">Mode sombre</span>
+            <span className="body text-secondary">Mode sombre</span>
             <button
               onClick={handleThemeToggle}
               className={`
-                relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-                ${settings.theme === 'dark' ? 'bg-blue-600' : 'bg-gray-600'}
+                relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-200
+                ${settings.theme === 'dark' ? 'bg-primary' : 'bg-surface-raised border border-border'}
               `}
             >
               <span
                 className={`
-                  inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                  inline-block h-4 w-4 transform rounded-full bg-white transition-all duration-200 shadow-sm
                   ${settings.theme === 'dark' ? 'translate-x-6' : 'translate-x-1'}
                 `}
               />
@@ -54,13 +52,18 @@ export const Settings: React.FC = () => {
         </div>
 
         {/* Coffee Dose Setting */}
-        <div className="bg-dark-card rounded-2xl p-6 border border-dark-border">
-          <h2 className="text-lg font-semibold text-white mb-4">Coffee Nap</h2>
-          <div className="space-y-3">
-            <div className="text-gray-300 text-sm">
+        <div className="glass-card-raised p-6">
+          <h2 className="h2 mb-4">Coffee Nap</h2>
+          <div className="space-y-4">
+            <div className="body text-secondary">
               Dose de caféine par défaut (mg)
             </div>
-            <div className="flex items-center gap-4">
+            <div className="slider-premium">
+              <div className="slider-track" />
+              <div 
+                className="slider-fill" 
+                style={{ width: `${(settings.coffeeDoseMg - 50) / 150 * 100}%` }}
+              />
               <input
                 type="range"
                 min="50"
@@ -68,44 +71,47 @@ export const Settings: React.FC = () => {
                 step="25"
                 value={settings.coffeeDoseMg}
                 onChange={(e) => handleCoffeeDoseChange(Number(e.target.value))}
-                className="slider flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                style={{ padding: 0, margin: 0 }}
               />
-              <span className="text-white font-medium w-12 text-right">
-                {settings.coffeeDoseMg}
-              </span>
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="flex justify-between caption text-secondary">
+              <span>50mg</span>
+              <span className="body text-primary font-medium">{settings.coffeeDoseMg}mg</span>
+              <span>200mg</span>
+            </div>
+            <div className="caption text-secondary">
               50mg = espresso, 100mg = café standard, 200mg = dose forte
             </div>
           </div>
         </div>
 
         {/* Data Management */}
-        <div className="bg-dark-card rounded-2xl p-6 border border-dark-border">
-          <h2 className="text-lg font-semibold text-white mb-4">Gestion des données</h2>
+        <div className="glass-card-raised p-6">
+          <h2 className="h2 mb-4">Gestion des données</h2>
           <div className="space-y-4">
-            <div className="text-sm text-gray-300">
+            <div className="body text-secondary">
               Vos données sont stockées localement sur cet appareil.
             </div>
             <button
               onClick={() => setClearDataConfirm(true)}
-              className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg font-medium transition-colors"
+              className="btn-cta w-full"
             >
               Tout effacer
             </button>
-            <div className="text-xs text-gray-500">
+            <div className="caption text-secondary">
               Cette action supprimera définitivement toutes vos sessions et réglages.
             </div>
           </div>
         </div>
 
         {/* About */}
-        <div className="bg-dark-card rounded-2xl p-6 border border-dark-border">
-          <h2 className="text-lg font-semibold text-white mb-4">À propos</h2>
-          <div className="space-y-2 text-sm text-gray-300">
-            <div>NAP TRACKER v1.0.0</div>
+        <div className="glass-card-raised p-6">
+          <h2 className="h2 mb-4">À propos</h2>
+          <div className="space-y-2 body text-secondary">
+            <div>NAPLY v1.0.0</div>
             <div>Application PWA de tracking de siestes</div>
-            <div className="text-xs text-gray-500 mt-2">
+            <div className="caption text-secondary mt-2">
               Conçue pour vous aider à trouver votre format de sieste optimal
             </div>
           </div>

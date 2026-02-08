@@ -1,209 +1,195 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../app/store';
-import { NapSession } from '../app/types';
-import { formatDateTime, getRelativeDate } from '../utils/time';
-import { NAP_TYPE_INFO } from '../app/types';
-import { ConfirmDialog } from '../components/ConfirmDialog';
-import { exportSessionsAsJSON, exportSessionsAsCSV } from '../utils/storage';
+import { formatDuration } from '../utils/time';
 
 export const History: React.FC = () => {
+  const navigate = useNavigate();
   const { sessions, deleteSession } = useAppStore();
-  const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; sessionId: string | null }>({
-    isOpen: false,
-    sessionId: null,
-  });
 
-  const handleDeleteClick = (sessionId: string) => {
-    setDeleteConfirm({ isOpen: true, sessionId });
-  };
-
-  const handleDeleteConfirm = () => {
-    if (deleteConfirm.sessionId) {
-      deleteSession(deleteConfirm.sessionId);
+  // Group sessions by date
+  const sessionsByDate = sessions.reduce((acc, session) => {
+    const date = new Date(session.createdAt).toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    if (!acc[date]) {
+      acc[date] = [];
     }
-    setDeleteConfirm({ isOpen: false, sessionId: null });
-  };
+    acc[date].push(session);
+    return acc;
+  }, {} as Record<string, typeof sessions>);
 
   const handleExportJSON = () => {
-    const data = exportSessionsAsJSON();
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `nap-tracker-export-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const dataStr = JSON.stringify(sessions, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `naply-sessions-${new Date().toISOString().split('T')[0]}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
   };
 
   const handleExportCSV = () => {
-    const data = exportSessionsAsCSV();
-    if (!data) return;
+    const headers = ['Date', 'Type', 'Durée', 'Énergie avant', 'Énergie après', 'ROI', 'Focus', 'Grogginess'];
+    const csvContent = [
+      headers.join(','),
+      ...sessions.map(session => [
+        new Date(session.createdAt).toLocaleDateString('fr-FR'),
+        session.napType,
+        formatDuration(session.audioDurationSec),
+        session.energyBefore,
+        session.energyAfter,
+        session.roiScore?.toFixed(2) || '',
+        session.focusAfter || '',
+        session.grogginessAfter || ''
+      ].join(','))
+    ].join('\n');
     
-    const blob = new Blob([data], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `nap-tracker-export-${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const dataUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+    const exportFileDefaultName = `naply-sessions-${new Date().toISOString().split('T')[0]}.csv`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
   };
 
-  const groupSessionsByDate = (sessions: NapSession[]) => {
-    const grouped = sessions.reduce((acc, session) => {
-      const date = getRelativeDate(session.createdAt);
-      if (!acc[date]) {
-        acc[date] = [];
-      }
-      acc[date].push(session);
-      return acc;
-    }, {} as Record<string, NapSession[]>);
-
-    return grouped;
+  const getNapIcon = (type: string) => {
+    switch (type) {
+      case 'nap10': return '⚡';
+      case 'nap15': return '🌊';
+      case 'nap20': return '☀️';
+      case 'coffee20': return '☕';
+      default: return '😴';
+    }
   };
 
-  const groupedSessions = groupSessionsByDate(sessions);
+  const getNapName = (type: string) => {
+    switch (type) {
+      case 'nap10': return 'Reset 10';
+      case 'nap15': return 'Recharge 15';
+      case 'nap20': return 'Full 20';
+      case 'coffee20': return 'Coffee 20';
+      default: return 'Nap';
+    }
+  };
 
   return (
-    <div className="min-h-screen pb-20 px-4">
-      <div className="max-w-md mx-auto pt-8 space-y-6">
+    <div className="min-h-screen pb-32">
+      <div className="max-w-sm mx-auto px-6 pt-12 space-y-8">
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-2">Historique</h1>
-          <p className="text-gray-400 text-sm">
-            {sessions.length} session{sessions.length !== 1 ? 's' : ''} enregistrée{sessions.length !== 1 ? 's' : ''}
-          </p>
+        <div className="space-y-2">
+          <h1 className="h1">Historique</h1>
+          <p className="caption">Vos sessions de sieste</p>
         </div>
 
         {/* Export Buttons */}
-        {sessions.length > 0 && (
-          <div className="flex gap-2">
+        <div className="glass-card-raised p-4">
+          <div className="flex gap-3">
             <button
               onClick={handleExportJSON}
-              className="btn-secondary flex-1 text-sm py-2"
+              className="btn-cta flex-1 text-sm"
             >
-              Export JSON
+              Exporter JSON
             </button>
             <button
               onClick={handleExportCSV}
-              className="btn-secondary flex-1 text-sm py-2"
+              className="btn-cta flex-1 text-sm"
             >
-              Export CSV
+              Exporter CSV
+            </button>
+          </div>
+        </div>
+
+        {/* Sessions List */}
+        <div className="space-y-6">
+          {Object.entries(sessionsByDate).map(([date, daySessions]) => (
+            <div key={date} className="space-y-3">
+              {/* Date Header */}
+              <h2 className="h2">{date}</h2>
+              
+              {/* Sessions for this date */}
+              <div className="space-y-3">
+                {daySessions.map((session) => (
+                  <div key={session.id} className="glass-card p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {/* Nap Icon */}
+                        <div className="nap-icon">
+                          {getNapIcon(session.napType)}
+                        </div>
+                        
+                        {/* Session Info */}
+                        <div>
+                          <div className="nap-title">
+                            {getNapName(session.napType)}
+                          </div>
+                          <div className="caption text-secondary">
+                            {formatDuration(session.audioDurationSec)} • 
+                            Énergie: {session.energyBefore} → {session.energyAfter}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* ROI Score */}
+                      <div className="text-right">
+                        <div className="body text-primary font-medium">
+                          {session.roiScore?.toFixed(1) || '0.0'}
+                        </div>
+                        <div className="caption text-secondary">ROI</div>
+                      </div>
+                    </div>
+                    
+                    {/* Additional Details */}
+                    {(session.focusAfter !== undefined || session.grogginessAfter !== undefined) && (
+                      <div className="mt-3 pt-3 border-t border-border flex gap-4 caption text-secondary">
+                        {session.focusAfter !== undefined && (
+                          <span>Focus: {session.focusAfter}/10</span>
+                        )}
+                        {session.grogginessAfter !== undefined && (
+                          <span>Grogginess: {session.grogginessAfter}/10</span>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Delete Button */}
+                    <div className="mt-3 flex justify-end">
+                      <button
+                        onClick={() => deleteSession(session.id)}
+                        className="caption text-secondary hover:text-red-400 transition-colors duration-200"
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {sessions.length === 0 && (
+          <div className="glass-card-raised p-8 text-center">
+            <div className="text-[48px] mb-4">😴</div>
+            <h2 className="h2 mb-2">Aucune session</h2>
+            <p className="body text-secondary mb-6">
+              Commencez votre première sieste pour voir votre historique
+            </p>
+            <button
+              onClick={() => navigate('/')}
+              className="btn-cta"
+            >
+              Commencer
             </button>
           </div>
         )}
-
-        {/* Sessions List */}
-        {sessions.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">📊</div>
-            <p className="text-gray-400">Aucune session enregistrée</p>
-            <p className="text-gray-500 text-sm mt-2">
-              Lancez votre première sieste pour voir l'historique ici
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {Object.entries(groupedSessions).map(([date, dateSessions]) => (
-              <div key={date}>
-                <h3 className="text-lg font-semibold text-white mb-3 sticky top-0 bg-dark bg-opacity-90 py-2">
-                  {date}
-                </h3>
-                <div className="space-y-3">
-                  {dateSessions.map((session) => {
-                    const napInfo = NAP_TYPE_INFO[session.napType];
-                    return (
-                      <div
-                        key={session.id}
-                        className="bg-dark-card rounded-xl p-4 border border-dark-border"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-medium text-white">
-                                {napInfo.name}
-                              </span>
-                              {session.coffee && (
-                                <span className="text-xs bg-yellow-600 text-yellow-100 px-2 py-1 rounded-full">
-                                  ☕ Coffee
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-xs text-gray-400">
-                              {formatDateTime(session.createdAt)}
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => handleDeleteClick(session.id)}
-                            className="text-red-400 hover:text-red-300 text-sm p-1"
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <span className="text-gray-400">Énergie:</span>
-                            <span className="ml-2 text-white">
-                              {session.energyBefore} → {session.energyAfter}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-gray-400">ROI:</span>
-                            <span className={`ml-2 font-bold ${
-                              session.roiScore >= 3 ? 'text-green-400' :
-                              session.roiScore >= 1 ? 'text-blue-400' :
-                              session.roiScore >= -1 ? 'text-yellow-400' :
-                              'text-red-400'
-                            }`}>
-                              {session.roiScore.toFixed(1)}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-gray-400">Focus:</span>
-                            <span className="ml-2 text-white">{session.focusAfter}/10</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-400">Grogginess:</span>
-                            <span className="ml-2 text-white">{session.grogginessAfter}/10</span>
-                          </div>
-                        </div>
-
-                        {session.contextTags && session.contextTags.length > 0 && (
-                          <div className="mt-2 flex gap-1 flex-wrap">
-                            {session.contextTags.map((tag, index) => (
-                              <span
-                                key={index}
-                                className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Delete Confirmation Dialog */}
-        <ConfirmDialog
-          isOpen={deleteConfirm.isOpen}
-          title="Supprimer la session"
-          message="Êtes-vous sûr de vouloir supprimer cette session ? Cette action ne peut pas être annulée."
-          confirmText="Supprimer"
-          cancelText="Annuler"
-          onConfirm={handleDeleteConfirm}
-          onCancel={() => setDeleteConfirm({ isOpen: false, sessionId: null })}
-          type="danger"
-        />
       </div>
     </div>
   );
