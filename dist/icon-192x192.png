@@ -1,0 +1,36 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with glass effect -->
+  <circle cx="96" cy="96" r="84" fill="url(#glassGradient)" stroke="rgba(148, 163, 184, 0.3)" stroke-width="2"/>
+  
+  <!-- NAPLY text -->
+  <text x="96" y="120" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="300" text-anchor="middle" fill="url(#textGradient)">
+    NAPLY
+  </text>
+  
+  <!-- Moon/sleep symbol -->
+  <path d="M96 48C88 48 81 55 81 63C81 71 88 78 96 78C104 78 111 71 111 63C111 55 104 48 96 48Z" fill="url(#moonGradient)" opacity="0.8"/>
+  
+  <!-- Small stars for dream effect -->
+  <circle cx="48" cy="48" r="3" fill="rgba(251, 191, 36, 0.8)"/>
+  <circle cx="144" cy="60" r="2" fill="rgba(251, 191, 36, 0.6)"/>
+  <circle cx="132" cy="132" r="2.5" fill="rgba(251, 191, 36, 0.7)"/>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(30, 41, 59, 0.95)"/>
+      <stop offset="50%" style="stop-color:rgba(15, 23, 42, 0.95)"/>
+      <stop offset="100%" style="stop-color:rgba(2, 6, 23, 0.95)"/>
+    </linearGradient>
+    
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4"/>
+      <stop offset="100%" style="stop-color:#0284c7"/>
+    </linearGradient>
+    
+    <linearGradient id="moonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4"/>
+      <stop offset="100%" style="stop-color:#0891b2"/>
+    </linearGradient>
+  </defs>
+</svg>
