@@ -1,0 +1,7 @@
+# This file ensures the audio directory is tracked by git
+# Add your MP3 files here:
+# - nap10.mp3 (10 minute nap audio)
+# - nap15.mp3 (15 minute nap audio)  
+# - nap20.mp3 (20 minute nap audio)
+# 
+# The coffee nap uses the same audio as nap20.mp3

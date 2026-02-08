@@ -1,0 +1,25 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with glass effect -->
+  <circle cx="16" cy="16" r="14" fill="url(#glassGradient)" stroke="rgba(148, 163, 184, 0.3)" stroke-width="1"/>
+  
+  <!-- Moon/Nap symbol -->
+  <path d="M16 8C12 8 9 11 9 14C9 17 12 20 16 20C20 20 23 17 23 14C23 11 20 8 16 8Z" fill="url(#moonGradient)" opacity="0.9"/>
+  
+  <!-- Small stars for dream effect -->
+  <circle cx="8" cy="8" r="1" fill="rgba(251, 191, 36, 0.8)"/>
+  <circle cx="24" cy="10" r="0.5" fill="rgba(251, 191, 36, 0.6)"/>
+  <circle cx="22" cy="22" r="0.8" fill="rgba(251, 191, 36, 0.7)"/>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(30, 41, 59, 0.9)"/>
+      <stop offset="100%" style="stop-color:rgba(15, 23, 42, 0.9)"/>
+    </linearGradient>
+    
+    <linearGradient id="moonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4"/>
+      <stop offset="100%" style="stop-color:#0284c7"/>
+    </linearGradient>
+  </defs>
+</svg>
